@@ -350,7 +350,7 @@ extern int max17042_soc( uint16_t* val );
 #include <lcd.h>
 
 #define BOOT_MENU_VERSION_STRING \
-	" Das u-boot menu for Nook Color v0.4. Brought to you by: j4mm3r"
+	" Das u-boot menu for Nook Color v0.4. Brought to you by: j4mm3r & N2Acards"
 
 #define CONVERT_X(v) 		#v
 #define CONVERT(v)		CONVERT_X(v)
@@ -691,8 +691,10 @@ static void Encore_boot(void)
 		int dev_idx = 0; int mode_idx = 0; int *idx;
 		user_req = 0;
 
-		bn_console_init(O_PORTRAIT, SCALE_DEFAULT, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
-		bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
+		#define SCALE_LARGE 2 //for old people that have touble with small text
+		bn_console_init(O_PORTRAIT, SCALE_LARGE, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
+		//bn_console_init(O_PORTRAIT, SCALE_DEFAULT, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
+		/*bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
 
 		for(opt=0; opt<50; opt++) { // Loop for 5 seconds
 			key = 0;
@@ -705,8 +707,8 @@ static void Encore_boot(void)
 				break;
 			}
 			udelay(RESET_TICK);
-		}
-
+		}*/
+		user_req = 1;
 		if (user_req) {
 			bn_console_puts("\n Entering boot menu...\n");
 			for(opt=1; opt<10; opt++)
@@ -717,16 +719,17 @@ static void Encore_boot(void)
 			bn_console_clear();
 			udelay(500*1000);
 			lcd_adjust_brightness(80);
-			bn_console_puts(" Boot options\n");
-			bn_console_puts(" ------------\n\n");
-			bn_console_puts(" Boot Device:\n"); // row 3
-			bn_console_puts(" Boot Mode  :\n"); // row 4
+			bn_console_puts(" N2Acards Boot Menu\n");
+			bn_console_puts(" ------------------\n\n");
+			//bn_console_puts(" Boot Device:\n"); // row 3
+			//bn_console_puts(" Boot Mode  :\n"); // row 4
 			bn_console_setpos(10, 0);
-			bn_console_puts(" Keys\n");
-			bn_console_puts(" -----\n\n");
-			bn_console_puts(" Home to change alternatives for highlighted option.\n");
-			bn_console_puts(" Vol- to move highlight to next option and continue.\n");
-			bn_console_puts(" Vol+ to move highlight to previous option.\n");
+			//bn_console_puts(" Keys\n");
+			//bn_console_puts(" -----\n\n");
+			//bn_console_puts(" Home to change alternatives for highlighted option.\n");
+			bn_console_puts(" Press Vol+ to boot into Android.\n");
+			bn_console_puts(" Press Vol- to boot into Nook Color.\n");
+			
 			bn_console_setpos(30, 0);
 			bn_console_puts(BOOT_MENU_VERSION_STRING);
 			opt = 0;
@@ -734,7 +737,7 @@ static void Encore_boot(void)
 
 			while(opt != 2)
 			{
-				if(idx == &dev_idx && opt == 0)
+				/*if(idx == &dev_idx && opt == 0)
 					bn_console_setcolor(CONSOLE_COLOR_BLACK, CONSOLE_COLOR_WHITE);
 				else
 					bn_console_setcolor(CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
@@ -754,13 +757,55 @@ static void Encore_boot(void)
 					bn_console_puts(" Press Vol- to boot now, Vol+ to go back to selection");
 				else
 					bn_console_puts("                                                     ");
-
+				*/
 				do
 				{
 					key = 0;
 					ret = tps65921_keypad_keys_pressed(&key);
 
-					if(ret)
+					if(key & VOLUP_KEY)
+					{
+						setenv("bootdevice", "SD");
+
+						//bn_console_clear();
+						bn_console_setcolor(CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
+						bn_console_setpos(16, 0);
+						bn_console_puts(" Booting Android, please wait...\n                                        ");
+						setenv("forcerecovery", "0");
+						opt = 2; //exit menu loop
+					}
+					if(key & VOLDN_KEY)
+					{						
+						setenv("bootdevice", "eMMC");
+
+						//bn_console_clear();
+						bn_console_setcolor(CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
+						bn_console_setpos(16, 0);
+						bn_console_puts(" Booting Nook Color, please wait...\n                                        ");
+						setenv("forcerecovery", "0");
+						opt = 2; //exit menu loop
+					}
+
+					if(key & HOME_KEY)
+					{
+						if(mode_idx == 1)
+						{
+							bn_console_setpos(16, 0);
+							bn_console_puts(" Booting Recovery, please wait...\n                                    "); 
+							setenv("forcerecovery", "2");
+							opt = 2; //exit menu loop
+						}						
+						
+						if(mode_idx == 0)
+						{
+							bn_console_setpos(16, 0);
+							bn_console_puts(" Boot into Recovery instead?\n Press Home button again to confirm. ");
+							mode_idx = 1;
+						}
+
+					}
+
+					/*if(ret)
 					{
 						udelay(RESET_TICK*5);
 						// When home is pressed then switch selection from device to mode
@@ -797,30 +842,26 @@ static void Encore_boot(void)
 							// Bail before boot?
 							if(opt==1) opt = 0;
 						}
-					}
+					}*/
 					udelay(RESET_TICK);
 				} while(!ret);
 			}
-
-			bn_console_setcolor(CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
-			bn_console_setpos(6, 0);
-			bn_console_puts(" Booting selected option, please wait...             ");
 
 			// override u-boot.order if present
 			setenv("customboot", "1");
 
 			// Set the boot device
-			if(dev_idx == 0)
+			/*if(dev_idx == 0)
 				setenv("bootdevice", "eMMC");
 			else
 			setenv("bootdevice", "SD");
-
+			*/
 			// If recovery is selected
-			if(mode_idx == 1)
+			/*if(mode_idx == 1)
 				setenv("forcerecovery", "2");
 			else
 				setenv("forcerecovery", "0");
-
+			*/
 			// If alternate booting is required
 			if(mode_idx == 2)
 				setenv("bootvar", "altboot");
