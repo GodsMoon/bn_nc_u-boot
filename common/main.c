@@ -350,7 +350,7 @@ extern int max17042_soc( uint16_t* val );
 #include <lcd.h>
 
 #define BOOT_MENU_VERSION_STRING \
-	" Das u-boot menu for Nook Color v0.4. Brought to you by: j4mm3r & N2Acards"
+	" N2A is a trademark of N2A Cards LLC. Copyright 2011 N2A Cards LLC"
 
 #define CONVERT_X(v) 		#v
 #define CONVERT(v)		CONVERT_X(v)
@@ -694,21 +694,21 @@ static void Encore_boot(void)
 		#define SCALE_LARGE 2 //for old people that have touble with small text
 		bn_console_init(O_PORTRAIT, SCALE_LARGE, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
 		//bn_console_init(O_PORTRAIT, SCALE_DEFAULT, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
-		/*bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
+		bn_console_puts(" Press any key within 3 second(s) for boot menu...\n");
 
-		for(opt=0; opt<50; opt++) { // Loop for 5 seconds
+		for(opt=0; opt<30; opt++) { // Loop for 3 seconds
 			key = 0;
 			ret = tps65921_keypad_keys_pressed(&key);
 			bn_console_setpos(0, 22);
-			bn_console_printf("%d", 5-(opt/10));
+			bn_console_printf("%d", 3-(opt/10));
 			if (key&HOME_KEY || key&VOLUP_KEY || key*VOLDN_KEY
 					|| gpio_pin_read(14)) {
 				user_req = 1;
 				break;
 			}
 			udelay(RESET_TICK);
-		}*/
-		user_req = 1;
+		}
+		//user_req = 1;
 		if (user_req) {
 			bn_console_puts("\n Entering boot menu...\n");
 			for(opt=1; opt<10; opt++)
@@ -719,7 +719,7 @@ static void Encore_boot(void)
 			bn_console_clear();
 			udelay(500*1000);
 			lcd_adjust_brightness(80);
-			bn_console_puts(" N2Acards Boot Menu\n");
+			bn_console_puts(" N2A (TM) Boot Menu\n");
 			bn_console_puts(" ------------------\n\n");
 			//bn_console_puts(" Boot Device:\n"); // row 3
 			//bn_console_puts(" Boot Mode  :\n"); // row 4
@@ -772,6 +772,7 @@ static void Encore_boot(void)
 						bn_console_setpos(16, 0);
 						bn_console_puts(" Booting Android, please wait...\n                                        ");
 						setenv("forcerecovery", "0");
+						setenv("customboot", "0");
 						opt = 2; //exit menu loop
 					}
 					if(key & VOLDN_KEY)
@@ -783,10 +784,11 @@ static void Encore_boot(void)
 						bn_console_setpos(16, 0);
 						bn_console_puts(" Booting Nook Color, please wait...\n                                        ");
 						setenv("forcerecovery", "0");
+						setenv("customboot", "0");
 						opt = 2; //exit menu loop
 					}
 
-					if(key & HOME_KEY)
+					/*if(key & HOME_KEY)
 					{
 						if(mode_idx == 1)
 						{
@@ -803,7 +805,7 @@ static void Encore_boot(void)
 							mode_idx = 1;
 						}
 
-					}
+					}*/
 
 					/*if(ret)
 					{
@@ -870,7 +872,7 @@ static void Encore_boot(void)
 			setenv("forcerecovery", "0");
 			setenv("customboot", "0");
 			printf("Booting into Normal Kernel\n");
-			bn_console_puts("\n\n Booting, please wait...");
+			bn_console_puts("\n\n Booting Android, please wait...");
 
 		     /* note: this does not currently over-write what is in the bcb.
 		      * Action on forcerecovery == 0 could read back the bcb and
