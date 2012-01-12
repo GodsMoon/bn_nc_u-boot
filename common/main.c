@@ -710,7 +710,7 @@ static void Encore_boot(void)
 		}
 		/*user_req = 1;*/
 		if (user_req) {
-			bn_console_puts("\n Entering boot menu...\n");
+			bn_console_puts("\n\n\n Entering boot menu...\n");
 			for(opt=1; opt<10; opt++)
 			{
 				udelay(200*1000);
