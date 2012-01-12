@@ -350,7 +350,7 @@ extern int max17042_soc( uint16_t* val );
 #include <lcd.h>
 
 #define BOOT_MENU_VERSION_STRING \
-	" Das u-boot menu for Nook Color v0.4. Brought to you by: j4mm3r & N2Acards"
+	" N2A is a trademark of N2A Cards LLC. Copyright 2012 N2A Cards LLC"
 
 #define CONVERT_X(v) 		#v
 #define CONVERT(v)		CONVERT_X(v)
@@ -694,7 +694,7 @@ static void Encore_boot(void)
 		#define SCALE_LARGE 2 //for old people that have touble with small text
 		bn_console_init(O_PORTRAIT, SCALE_LARGE, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
 		//bn_console_init(O_PORTRAIT, SCALE_DEFAULT, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
-		/*bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
+		bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
 
 		for(opt=0; opt<50; opt++) { // Loop for 5 seconds
 			key = 0;
@@ -707,8 +707,8 @@ static void Encore_boot(void)
 				break;
 			}
 			udelay(RESET_TICK);
-		}*/
-		user_req = 1;
+		}
+		/*user_req = 1;*/
 		if (user_req) {
 			bn_console_puts("\n Entering boot menu...\n");
 			for(opt=1; opt<10; opt++)
@@ -867,10 +867,12 @@ static void Encore_boot(void)
 				setenv("bootvar", "altboot");
 		}
 		else {
+			bn_console_puts("\n\n Booting Nook Color, please wait...");	
+
+			setenv("bootdevice", "eMMC");
 			setenv("forcerecovery", "0");
 			setenv("customboot", "0");
-			printf("Booting into Normal Kernel\n");
-			bn_console_puts("\n\n Booting, please wait...");
+
 
 		     /* note: this does not currently over-write what is in the bcb.
 		      * Action on forcerecovery == 0 could read back the bcb and
