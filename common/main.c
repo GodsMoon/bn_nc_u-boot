@@ -719,7 +719,7 @@ static void Encore_boot(void)
 			bn_console_clear();
 			udelay(500*1000);
 			lcd_adjust_brightness(80);
-			bn_console_puts(" N2Acards Boot Menu\n");
+			bn_console_puts(" N2A (TM) Boot Menu\n");
 			bn_console_puts(" ------------------\n\n");
 			//bn_console_puts(" Boot Device:\n"); // row 3
 			//bn_console_puts(" Boot Mode  :\n"); // row 4
