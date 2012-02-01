@@ -867,9 +867,9 @@ static void Encore_boot(void)
 				setenv("bootvar", "altboot");
 		}
 		else {
-			bn_console_puts("\n\n Booting Nook Color, please wait...");	
+			bn_console_puts("\n\n Booting Android, please wait...");	
 
-			setenv("bootdevice", "eMMC");
+			setenv("bootdevice", "SD");
 			setenv("forcerecovery", "0");
 			setenv("customboot", "0");
 
