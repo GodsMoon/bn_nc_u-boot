@@ -694,7 +694,7 @@ static void Encore_boot(void)
 		#define SCALE_LARGE 2 //for old people that have touble with small text
 		bn_console_init(O_PORTRAIT, SCALE_LARGE, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
 		//bn_console_init(O_PORTRAIT, SCALE_DEFAULT, CONSOLE_COLOR_WHITE, CONSOLE_COLOR_BLACK);
-		bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
+		/*bn_console_puts(" Press any key within 5 second(s) for boot menu...\n");
 
 		for(opt=0; opt<50; opt++) { // Loop for 5 seconds
 			key = 0;
@@ -707,10 +707,10 @@ static void Encore_boot(void)
 				break;
 			}
 			udelay(RESET_TICK);
-		}
-		/*user_req = 1;*/
+		}*/
+		user_req = 1;
 		if (user_req) {
-			bn_console_puts("\n\n\n Entering boot menu...\n");
+			bn_console_puts(" Entering boot menu...\n");
 			for(opt=1; opt<10; opt++)
 			{
 				udelay(200*1000);
@@ -867,6 +867,8 @@ static void Encore_boot(void)
 				setenv("bootvar", "altboot");
 		}
 		else {
+			/* this never gets called */			
+
 			bn_console_puts("\n\n Booting Android, please wait...");	
 						
 			setenv("bootdevice", "SD");
